@@ -3,7 +3,7 @@ import csv
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 
-from work_with_database.phones.models import Phone
+from phones.models import Phone
 
 
 class Command(BaseCommand):
@@ -25,5 +25,5 @@ class Command(BaseCommand):
 					image=line[2],
 					release_date=line[4],
 					lte_exists=line[5],
-					slug=slugify(line[0]))
+					slug=slugify(line[1]))
 				phone.save()

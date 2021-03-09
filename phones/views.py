@@ -5,21 +5,23 @@ from phones.models import Phone
 
 def show_catalog(request):
 	template = 'catalog.html'
-	sort = request.GET.get('sort')
-	if sort:
-		if sort == 'name':
-			context = {'phones': Phone.objects.order_by('name').all()}
-			return render(request, template, context)
-		elif sort == 'min_price':
-			context = {'phones': Phone.objects.order_by('price').all()}
-			return render(request, template, context)
-		elif sort == 'max_price':
-			context = {'phones': Phone.objects.order_by('-price').all()}
-			return render(request, template, context)
+	sort_dict = {
+		'name': 'name',
+		'min_price': 'price',
+		'max_price': '-price',
+	}
+	phones = Phone.objects.all()
+	sort_key = request.GET.get('sort')
+	if sort_key:
+		if sort_key == 'min_price':
+			phones = phones.order_by(sort_dict.get(sort_key, 'price'))
+		elif sort_key == 'max_price':
+			phones = phones.order_by(sort_dict.get(sort_key, '-price'))
+		elif sort_key == 'name':
+			phones = phones.order_by(sort_dict.get(sort_key, 'name'))
 	else:
-		return render(request, template, context={
-			'phones': Phone.objects.all()
-		})
+		phones = phones.order_by('name')
+	return render(request, template, context={'phones': phones})
 
 
 def show_product(request, slug):
